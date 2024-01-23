@@ -15,6 +15,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 from model import build_model
+from start import ocr_file
 # from prepare import replace_char
 
 
@@ -29,11 +30,10 @@ char_to_num = layers.StringLookup(
 num_to_char = layers.StringLookup(
     vocabulary=char_to_num.get_vocabulary(), mask_token=None, invert=True)
 model = build_model()
-model.load_weights('mod.h5')
+model.load_weights(ocr_file)
 prediction_model = keras.models.Model(
     model.get_layer(name="image").input, model.get_layer(name="dense2").output
 )
-# read = easyocr.Reader(['en'])
 log = logging.getLogger('file1')
 
 
@@ -52,8 +52,6 @@ def decode_batch_predictions(pred):
 
 
 def prepare_image(img):
-    # log.info(f'Отношение ширины к длине: {w1 / h1}') tF7J3hXb
-    #python detect.py --weights bestR4.pt --source rtsp://test:Qaz2wsxedc@89.17.58.114:8052/ISAPI/Streaming/Channels/101 --save-crop --nosave --cam-name test_cam2 --boxes 580 180 1680 550 --lines 180 550 --direct up --time 20
     grayimg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img1 = canny(grayimg, sigma=3.0)
     out, angles, distances = hough_line(img1)
@@ -94,13 +92,5 @@ def prepare_image(img):
     preds = prediction_model.predict(img2)
     pred_texts = decode_batch_predictions(preds)
     log.info(pred_texts)
-    # text = read.readtext(img, detail=0, allowlist=list('ABEKMHOPCTYXabekmhopctyx0123654789-'), paragraph=True)
-    # text1 = read.readtext(final, detail=0, allowlist=list('ABEKMHOPCTYXabekmhopctyx0123654789-'), paragraph=True)
-    # text2 = read.readtext(tfinal, detail=0, allowlist=list('ABEKMHOPCTYXabekmhopctyx0123654789-'), paragraph=True)
-    #log.info([text, text1, text2])
-    # print(pred_texts, pred_texts1)
-    # print(text2, text3)
-    # text = replace_char(text+text1+text2)
-    # res.extend(pred_texts) # + text)
     return pred_texts[0]
 
