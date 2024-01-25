@@ -560,11 +560,11 @@ def save_one_box(xyxy, im, file=Path('im.jpg'), gain=1.02, pad=10, square=False,
     clip_boxes(xyxy, im.shape)
     log.info([xyxy])
     crop = im[int(xyxy[0, 1]):int(xyxy[0, 3]), int(xyxy[0, 0]):int(xyxy[0, 2]), ::(1 if BGR else -1)]
-    BASEDIR = Path(__file__).parents[2]
-    UPLOAD_DIR_CROP = BASEDIR / 'images' / 'crops'
-    date = datetime.now().strftime('%d_%m_%Y_%H_%M_%S')
-    f_crop = f'{date}_crop.jpg'
-    UPLOAD_DIR_CROP.mkdir(parents=True, exist_ok=True)
-    Image.fromarray(crop[..., ::-1]).save(UPLOAD_DIR_CROP / f_crop, quality=95, subsampling=0)
+    # BASEDIR = Path(__file__).parents[2]
+    # UPLOAD_DIR_CROP = BASEDIR / 'images' / 'crops'
+    # date = datetime.now().strftime('%d_%m_%Y_%H_%M_%S')
+    # f_crop = f'{date}_crop.jpg'
+    # UPLOAD_DIR_CROP.mkdir(parents=True, exist_ok=True)
+    # Image.fromarray(crop[..., ::-1]).save(UPLOAD_DIR_CROP / f_crop, quality=95, subsampling=0)
     return crop
     

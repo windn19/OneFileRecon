@@ -1,10 +1,5 @@
-import json
 import logging
-from os import listdir
-from os.path import join
-import re
 
-# import easyocr
 import cv2
 import numpy as np
 from skimage.feature import canny
@@ -15,8 +10,11 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 from model import build_model
-from start import ocr_file
-# from prepare import replace_char
+try:
+    from settings import ocr_weights
+except Exception as e:
+    print('Ошибка чтения весов распознавания номеров', e)
+    ocr_weights = ''
 
 
 characters = [' ', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'K',
@@ -30,7 +28,8 @@ char_to_num = layers.StringLookup(
 num_to_char = layers.StringLookup(
     vocabulary=char_to_num.get_vocabulary(), mask_token=None, invert=True)
 model = build_model()
-model.load_weights(ocr_file)
+if ocr_weights:
+    model.load_weights(ocr_weights)
 prediction_model = keras.models.Model(
     model.get_layer(name="image").input, model.get_layer(name="dense2").output
 )

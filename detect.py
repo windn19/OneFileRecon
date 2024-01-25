@@ -195,7 +195,7 @@ def run(model,
                         log_my.info(f'Координата: {type(crop)}')
                         res = prepare_image(crop)
                         text = prepare1(res)
-                result.append((p.name, text, crop))
+                        result.append((p.name, text, crop))
                         
 
             # Stream results !!!!
@@ -238,7 +238,7 @@ def run(model,
         LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
     if update:
         strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
-    return result, crop
+    return result
 
 
 def parse_opt():

@@ -1,10 +1,13 @@
-ocr_file = ''
-
 from detect import load_model, run
+try:
+    from settings import yolo_weights
+except Exception as e:
+    print('Нет файла настроек с весами для yolo')
+    yolo_weights = ''
 
 
-model = load_model(weights='')
-
-print(run(model=model, source='test_image_part1/', save_crop=True, nosave=True))
+def get_result(path):
+    model = load_model(weights=yolo_weights)
+    return run(model=model, source=path, save_crop=True, nosave=True)
 
 
