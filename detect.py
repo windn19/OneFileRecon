@@ -160,6 +160,7 @@ def run(model,
                 p, im0, frame = path, im0s.copy(), getattr(dataset, 'frame', 0)
 
             p = Path(p)  # to Path
+            temp = (p.name, None, None)
             save_path = str(save_dir / p.name)  # im.jpg
             txt_path = str(save_dir / 'labels' / p.stem) + (
                 '' if dataset.mode == 'image' else f'_{frame}')  # im.txt
@@ -195,8 +196,8 @@ def run(model,
                         log_my.info(f'Координата: {type(crop)}')
                         res = prepare_image(crop)
                         text = prepare1(res)
-                        result.append((p.name, text, crop))
-                        
+                        temp = (p.name, text, crop)
+            result.append(temp)
 
             # Stream results !!!!
             im0 = annotator.result()
