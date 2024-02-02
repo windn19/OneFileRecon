@@ -129,7 +129,7 @@ def run(model,
     # Run inference
     model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
     seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
-    text, result = None, []
+    text, result, res = None, [], []
     for path, im, im0s, vid_cap, s in dataset:
         with dt[0]:
             im = torch.from_numpy(im).to(model.device)
@@ -178,6 +178,7 @@ def run(model,
                     s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
 
                 # Write results
+                res.clear()
                 for *xyxy, conf, cls in reversed(det):
                     if save_txt:  # Write to file
                         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
@@ -196,8 +197,11 @@ def run(model,
                         log_my.info(f'Координата: {type(crop)}')
                         res = prepare_image(crop)
                         text = prepare1(res)
-                        temp = (p.name, text, crop)
-            result.append(temp)
+                        res.append((p.name, text, crop))
+            if res:
+                result.extend(res)
+            else:
+                result.append(temp)
 
             # Stream results !!!!
             im0 = annotator.result()
